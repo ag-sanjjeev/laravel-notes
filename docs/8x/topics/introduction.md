@@ -61,13 +61,6 @@
 7. Git (Optional but recommended):
 	- Git is a version control system that is highly recommended for managing code versions.
 
-### &#10022; Installation:
-
-### &#10022; Directory Structure:
-
-### &#10022; Post Setup:
-
-### &#10022; Deployment:
 
 ---
 [&#8682; To Top](#-introduction)
