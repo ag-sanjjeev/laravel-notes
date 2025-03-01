@@ -61,6 +61,74 @@
 7. Git (Optional but recommended):
 	- Git is a version control system that is highly recommended for managing code versions.
 
+### &#10022; Installation:
+
+1. Via Composer Create-Project (Recommended):
+	- This is the most common and recommended method.
+	- Open terminal and navigate to the directory where it to be created Laravel project.
+	- Run the following command:
+
+		```bash
+		composer create-project --prefer-dist laravel/laravel <project-name>
+		```
+
+	- Replace `<project-name>` with the desired name for your project.
+	- Composer will download and install Laravel and its dependencies.
+
+2. Install Specific Version Via Composer Create-Project:
+	
+	- It is possible to specify the desired Laravel version by adding a version constraint after `laravel/laravel`.
+
+ 	- For example, to install Laravel 8.83.0, you would run:
+
+	  ```bash
+	  composer create-project --prefer-dist laravel/laravel:v8.83.0 your-project-name
+	  ```
+
+	- For example, to install the latest Laravel 8 version, you can use:
+
+	  ```bash
+	  composer create-project --prefer-dist laravel/laravel:"8.*" your-project-name
+	  ```
+
+	- If you need a specific version range, then use standard Composer version constraints. For example, to install any version within the 8.x range:
+
+	  ```bash
+	  composer create-project --prefer-dist laravel/laravel:"^8.0" your-project-name
+	  ```
+  	- Where, the '^' symbol means, install the latest minor or patch release of version 8.
+
+3. Via Laravel Installer (Less common for specific version):
+
+	- First, it is required to install the Laravel installer globally via Composer:
+
+		 ```bash
+		 composer global require laravel/installer
+		 ```
+
+	- Then, decide and navigate to the directory where you want to create Laravel project, and run below command:
+
+		 ```bash
+		 laravel new <project-name>
+		 ```
+
+	- This will create a new Laravel project in the specified directory.
+
+4. Checking the Installed Version:
+
+	- After the installation is complete, To check the installed Laravel version by navigating to installed project directory and running below artisan command:
+
+	  ```bash
+	  php artisan --version
+	  ```
+
+**Note:**
+
+- To install via **docker container**, check official documentation page.
+- Ensure that the Laravel version must compatible with PHP version. Refer to the official Laravel documentation for version compatibility information.
+- Always recommended to refer official Laravel documentation for the most up-to-date installation instructions and version compatibility information.
+- The laravel installer global command always installs the latest version. To use composer create-project is the best method to use specific versions.
+
 
 ---
 [&#8682; To Top](#-introduction)
