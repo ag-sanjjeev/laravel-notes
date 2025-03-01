@@ -1,6 +1,5 @@
 ## &#10162; Introduction:
 
-
 ### &#9780; Overview:
 1. [Pre-requirements](#-pre-requirements)
 2. [Installation](#-installation)
@@ -261,6 +260,82 @@ After installation, that contains files and folders as below. *It is not complet
 	- This will migrate some tables into the database which is configured before in `.env` file.
 
 ### &#10022; Deployment:
+
+**Summary:**
+
+1. Choose a Server: such as AWS, DigitalOcean, Google Cloud, VPS, or dedicated servers.
+2. Install Required Software on the server with available tools or via puTTY: 
+	- PHP
+	- Composer
+	- Web server (Apache or Nginx) 
+	- Database server (MySQL, PostgreSQL, etc.)
+	- Node.js and npm (if using Laravel Mix)
+	- Git (recommended) 
+3. Configure Web Server: 
+	- setting document root to your application public directory
+	- configure host
+	- configure database if necessary
+	- Enable `mod_rewrite` in Apache or configure rewrite rules in Nginx to handle Laravel routing
+	- finally, set proper file permissions.
+4. Code Deployment:
+	- Git Deployment is recommended
+	- or Manual Deployment (Carefully deploy files and any development and sensitive files may cause trouble to your site)
+	- Use composer commands to install production dependency
+		```bash
+		composer install --no-dev --optimize-autoloader
+		```
+5. Environment Configuration:
+	- APP_ENV=production
+	- APP_DEBUG=false
+	- APP_URL
+	- Database connection details
+	- Cache and session drivers
+	- Mail settings
+	- Generate the application key: 
+		```bash
+		php artisan key:generate
+		```
+	- Configuration Caching:
+		```bash
+		Run php artisan config:cache
+		```
+	- Route Caching:
+		```bash
+		Run php artisan route:cache
+		```
+6. Database Setup:
+	- Create Database
+	- Run Migrations:
+		```bash
+		Run php artisan migrate --force
+		``` 
+		*The --force flag is required in production.*
+	- Seed Database (Optional):
+		```bash
+		Run php artisan db:seed --force
+		```
+		*Seed initial data if necessary.*
+7. Asset Compilation (If using Laravel Mix):
+	- Install Node Dependencies:
+		```bash
+		Run npm install --production
+		```
+	- Compile Assets:
+		```bash
+		Run npm run production
+		```
+		*to compile and minify your assets.*
+8. Web Server Configuration:
+	- Set and ensure the web server user has proper write access to the directories such as `storage` and `bootstrap/cache` directories.
+	- Configure a process manager like `supervisor` to keep queue workers running.
+	- Configure a `cron job` to run Laravel scheduler.
+9. Deployment Tools:
+	- Laravel Forge
+	- Envoyer
+	- Docker
+	- CI/CD
+
+Refer deployment procedure and process in official Laravel documentation page.
 
 ---
 [&#8682; To Top](#-introduction)
