@@ -1,0 +1,8 @@
+# Avoid gitignore
+!.gitignore
+
+# Avoid Devnote
+/devnote/
+devnote/*
+
+
