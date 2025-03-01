@@ -5,10 +5,10 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 ## &#9780; Overview
 1. Introduction:
 	- [Pre-requirements](./topics/introduction.md#-pre-requirements)
-	- [Installation](./topics/introdcution.md#-installation)
-	- [Directory Structure](./topics/introdcution.md#-directory-structure)
-	- [Post Setup](./topics/introdcution.md#-post-setup)
-	- [Deployment](./topics/introdcution.md#-deployment)
+	- [Installation](./topics/introduction.md#-installation)
+	- [Directory Structure](./topics/introduction.md#-directory-structure)
+	- [Post Setup](./topics/introduction.md#-post-setup)
+	- [Deployment](./topics/introduction.md#-deployment)
 
 2. Core Concepts:
 	- Artisan Commands
