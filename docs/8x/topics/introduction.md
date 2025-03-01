@@ -131,6 +131,73 @@
 
 ### &#10022; Directory Structure:
 
+After installation, that contains files and folders as below. *It is not complete but an overview.*
+
+```
+<project-name>/
+├── app/
+│   ├── Console/
+│   ├── Exceptions/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   ├── Middleware/
+│   ├── Models/
+│   ├── Providers/
+├── bootstrap/
+│   ├── cache/
+├── config/
+├── database/
+│   ├── factories/
+│   ├── migrations/
+│   ├── seeders/
+├── public/
+├── resources/
+│   ├── css/
+│   ├── js/
+│   ├── lang/
+│   ├── views/
+├── routes/
+│   ├── api.php
+│   ├── channels.php
+│   ├── console.php
+│   ├── web.php
+├── storage/
+│   ├── app/
+│   ├── framework/
+│   ├── logs/
+├── tests/
+│   ├── Feature/
+│   ├── Unit/
+├── vendor/
+├── .env
+├── artisan
+├── composer.json
+├── composer.lock
+├── package.json
+├── package-lock.json
+├── phpunit.xml
+├── server.php
+```
+
+**Explanation:**
+
+- `app`: it is core the application code, including models, controllers, middleware, and providers.
+- `bootstrap`: it contains bootstrapping files, including the cache directory.
+- `config`: it contains all configuration files for the project application.
+- `database`: it contains database migration, factory and seeder files.
+- `public`: it contains the public-facing files of the application such as `index.php`, `.htaccess` and assets.
+- `resources`: it contains application assets such as views, CSS, JavaScript, and language files.
+- `routes`: it contains all of the application route definitions.
+- `storage`: it contains files generated and uploaded in the application such as logs, cached files, and user-uploaded files.
+- `tests`: it contains application automated tests.
+- `vendor`: it contains the composer dependencies of the application.
+- `.env`: it contains environment variables for the application.
+- `artisan`: It is an Artisan command-line tool.
+- `composer.json` & `composer.lock`: those are composer dependency management files.
+- `package.json` & `package-lock.json`: those are Node.js dependency management files.
+- `phpunit.xml`: it is a PHPUnit configuration file.
+- `server.php`: it is ab uilt in php server file.
+
 ### &#10022; Post Setup:
 
 1. Navigate to the Project Directory:
