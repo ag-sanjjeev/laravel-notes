@@ -7,9 +7,14 @@
 
 ### &#10022; What is Artisan:
 
-### &#10022; Basic Usage:
+Artisan is a command-line tool included with Laravel that automates and simplifies many repetitive development tasks. It is designed to automate tasks such as:
 
-### &#10022; Common Artisan Commands:
+- Generating boilerplate code such as controllers, models and migrations.
+- Running database migrations and seeders.
+- Managing routes.
+- Caching and clearing caches.
+- Running tests.
+- And much more.
 
 
 ---
