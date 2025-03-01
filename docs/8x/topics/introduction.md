@@ -129,6 +129,71 @@
 - Always recommended to refer official Laravel documentation for the most up-to-date installation instructions and version compatibility information.
 - The laravel installer global command always installs the latest version. To use composer create-project is the best method to use specific versions.
 
+### &#10022; Directory Structure:
+
+### &#10022; Post Setup:
+
+1. Navigate to the Project Directory:
+
+	 ```bash
+	 cd <project-name>
+	 ```
+
+2. Check installed version:
+
+	- After the installation is complete, check Laravel version for ensure, it is installed properly:
+
+	  ```bash
+	  php artisan --version
+	  ```
+
+3. Configure Environment Variables:
+
+	- Copy the `.env.example` file to `.env`:
+
+		 ```bash
+		 cp .env.example .env
+		 ```
+
+	- Open the `.env` file and configure required database settings,generate application key, and set other environment variables.
+
+4. Generate the application key:
+
+	 ```bash
+	 php artisan key:generate
+	 ```
+
+5. Install Node Dependencies (If using Laravel Mix):
+
+	 ```bash
+	 npm install
+	 ```
+
+6. Run the Development Server (Optional):
+
+	 ```bash
+	 php artisan serve
+	 ```
+
+	- This will start Laravel's built-in development server.
+
+	**Note:**
+	
+	- When serve with **docker container**, refer to the official Laravel documentation page.
+
+7. Database Migrations (Optional but usually needed):
+
+	 ```bash
+	 php artisan migrate
+	 ```
+
+	- This will run your database migrations.
+
+	**Note:**
+	
+	- This will migrate some tables into the database which is configured before in `.env` file.
+
+### &#10022; Deployment:
 
 ---
 [&#8682; To Top](#-introduction)
