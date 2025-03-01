@@ -16,6 +16,17 @@ Artisan is a command-line tool included with Laravel that automates and simplifi
 - Running tests.
 - And much more.
 
+### &#10022; Basic Usage:
+
+- To run an Artisan command, open the terminal and navigate to the installed Laravel project root directory.
+- Then, use the following syntax:
+```bash
+php artisan command:name [options] [arguments]
+```
+- Where,
+	- `command:name`: The name of the Artisan command you want to run.
+	- `[options]`: Optional flags that sets the command's behavior.
+	- `[arguments]`: Optional values that the command might requires.
 
 ---
 [&#8682; To Top](#-artisan-commands)
