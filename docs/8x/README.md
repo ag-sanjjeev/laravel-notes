@@ -11,7 +11,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Deployment](./topics/introduction.md#-deployment)
 
 2. Core Concepts:
-	- Artisan Commands
+	- [Artisan Commands](./topics/artisan-commands.md)
 	- Routing
 	- Middleware
 	- CSRF Protection
