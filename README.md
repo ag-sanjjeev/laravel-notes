@@ -49,7 +49,7 @@ Commonly known with followings:
 Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request. Make sure to follow the existing coding style and provide clear documentation for your changes. All contributions to the notes should follow [contribution guidelines](#)
 
 ## &#9873; Disclaimer
-This is not to be consider as official documentation. It is mainly provided for educational purpose. For better understanding, consult with expert and double check with [Official Laravel Documentation](#), Before proceed in real-time implementations.
+This is not to be consider as official documentation. It is mainly provided for educational purpose. For better understanding, consult with expert and double check with [Official Laravel Documentation](https://laravel.com/docs/), Before proceed in real-time implementations.
 
 ## &#9873; License
 This reference licensed under the [MIT license](LICENSE). Feel free to use, modify, and distribute it as per the terms of the license.
