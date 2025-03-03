@@ -354,6 +354,6 @@ public function register()
 ---
 [&#8682; To Top](#-middleware)
 
-[&#10094; Previous Topic](./routing.md) &emsp; [Next Topic &#10095;](./csrf-protection.md)
+[&#10094; Previous Topic](./routing.md) &emsp; [Next Topic &#10095;](./controllers.md)
 
 [&#8962; Goto Home Page](../README.md)
