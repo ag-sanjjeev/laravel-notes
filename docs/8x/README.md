@@ -13,7 +13,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 2. Core Concepts:
 	- [Artisan Commands](./topics/artisan-commands.md)
 	- [Routing](./topics/routing.md)
-	- Middleware
+	- [Middleware](./topics/middleware.md)
 	- CSRF Protection
 	- Controllers
 	- Requests
