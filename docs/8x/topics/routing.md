@@ -29,18 +29,18 @@ By these features, it will eliminate usage of controller for retrieve data by th
 	- [Subdomain Routing](#-subdomain-routing)
 16. [Model Binding](#-model-binding)
 17. [Implicit Model Binding](#-implicit-model-binding)
-    - [Models Binding For Soft Deleted Record](#-model-binding-for-soft-deleted-records)
+    - [Model Binding For Soft Deleted Records](#-model-binding-for-soft-deleted-records)
     - [Custom Column Key](#-custom-column-key)
     - [Key Scoping](#-key-scoping)
     - [Missing Model Behavior](#-missing-model-behavior)    
 18. [Explicit Model Binding](#-explicit-model-binding)
 19. [Custom Model Binding](#-custom-model-binding)
-. [Fallback Routes](#-)
-. [Request Rate Limiting](#-)
-. [Form Method Spoofing](#-)
-. [Current Route Information](#-)
-. [CORS](#-)
-. [Route Caching](#-)
+20. [Fallback Routes](#-fallback-routes)
+21. [Request Rate Limiting](#-request-rate-limiting)
+22. [Form Method Spoofing](#-form-method-spoofing)
+23. [Current Route Information](#-current-route-information)
+24. [CORS](#-cors)
+25. [Route Caching](#-route-caching)
 
 ### &#10022; Route Definition:
 
@@ -484,7 +484,7 @@ public function show(Post $post)
 }
 ```
 
-### &#10022; Models Binding For Soft Deleted Record:
+### &#10022; Model Binding For Soft Deleted Records:
 
 When a model contains a soft deleted record, then Laravel treats as deleted by checking a column `deleted_at` is not null. 
 
@@ -698,15 +698,212 @@ public function resolveChildRouteBinding($childType, $value, $field)
 
 ### &#10022; Fallback Routes:
 
+Laravel route `fallback` method will be executed when no other route matches for the incoming request. Any of the unmatched or unhandled requests will give a 404 page not found via Laravel application exception handler. 
+
+For all middleware in the `web` middleware group will apply to the route.
+
+```php
+use Illuminate\Support\Facades\Route;
+
+/**
+ * All route definitions for web 
+ */
+
+// Starting of route definitions
+// ...
+// End of all route definitions
+
+Route::fallback(function () {
+    //
+});
+```
+
+**Note:**
+
+- Always, the fallback route definition should be the last route registered by the application.
+
+
 ### &#10022; Request Rate Limiting:
+
+**Define Rate Limits:**
+
+Laravel provides possibilities to add rate limiting services, that may restrict the amount of traffic based on certain conditions for a given route or group of routes. 
+
+It can be defined within `App\Providers\RouteServiceProvider` class. It can be done within the `configureRateLimiting` method.
+
+Rate limiters are defined using `Illuminate\Support\Facades\RateLimiter` class instance using the `for` method of it.
+
+That `for` method accepts limiter `name` and `closure` callback or definition which returns limit configuration to it. 
+
+Limit can be configured using `Illuminate\Cache\RateLimiting\Limit` class instance with their methods such as `none()`, `perMinute($value)` and `by()`.   
+
+If request rate limits exceeds for incoming request then a response returned by Laravel with a 429 HTTP status code.
+
+In `RouteServiceProvider` class:
+
+Which defines and allow request of 1000 times from same user within a minutes and if exceeds then revoke the connection.
+
+```php
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+ 
+/**
+ * Configure the rate limiters for the application.
+ *
+ * @return void
+ */
+protected function configureRateLimiting()
+{
+    RateLimiter::for('global', function (Request $request) {
+        return Limit::perMinute(1000);
+    });
+}
+```
+
+**Custom Rate Limit Response:**
+
+In `RouteServiceProvider` class:
+
+```php
+RateLimiter::for('global', function (Request $request) {
+    return Limit::perMinute(1000)->response(function () {
+        return response('Exceeds allowed usage', 429);
+    });
+});
+```
+
+**Rate Limit For Different Users:**
+
+It is possible to set rate limit for different users such as guest, authorized user and premium or VIP user.
+
+In `RouteServiceProvider` class:
+
+Which does not set any restriction for upload to VIP customers, but not for all users.
+
+```php
+RateLimiter::for('uploads', function (Request $request) {
+    return $request->user()->vipCustomer()
+                ? Limit::none()
+                : Limit::perMinute(100);
+});
+```
+
+**Rate Limit by IP address:**
+
+In `RouteServiceProvider` class:
+
+Rate limit between VIP customer and all other users.
+
+```php
+RateLimiter::for('uploads', function (Request $request) {
+    return $request->user()->vipCustomer()
+                ? Limit::none()
+                : Limit::perMinute(100)->by($request->ip());
+});
+```
+
+Rate limit between authorized user and all other users.
+
+```php
+RateLimiter::for('uploads', function (Request $request) {
+    return $request->user()
+                ? Limit::perMinute(100)->by($request->user()->id)
+                : Limit::perMinute(10)->by($request->ip());
+});
+```
+
+**Multiple Rate Limits:**
+
+In `RouteServiceProvider` class:
+
+```php
+RateLimiter::for('login', function (Request $request) {
+    return [
+        Limit::perMinute(50), // overall request limits per minute
+        Limit::perMinute(3)->by($request->input('email')), // which allow until limit exceeds for same email address 
+    ];
+});
+```
+
+**Attach Route Limiter to Routes:**
+
+It is possible to set rate limit with middleware group using `throttle` middleware, which accepts the name of the rate limiter defined in `RouteServiceProvider`.
+
+In `web.php` file:
+
+```php
+Route::middleware(['throttle:uploads'])->group(function () {
+    Route::post('/audio/upload', function () {
+        //
+    });
+ 
+    Route::post('/video/upload', function () {
+        //
+    });
+});
+```
+
+Refer official documentation for Throttling With Redis.
 
 ### &#10022; Form Method Spoofing:
 
+This will set appropriate methods to the form data. Since, HTML forms do not support PUT, PATCH, or DELETE method actions. So, when defining a route with following methods PUT, PATCH, or DELETE, then it need to add a hidden `_method` field in the form. This will sent with form submission.
+
+```php
+<form action="/article" method="POST">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+</form>
+```
+
+**Using blade template:**
+
+```php
+<form action="/example" method="POST">
+    @method('PUT') <!-- it is equivalent to hidden _method field -->
+    @csrf 
+</form>
+```
+
 ### &#10022; Current Route Information:
+
+Facades Route class provides methods to access route definition details for incoming request. 
+
+```php
+use Illuminate\Support\Facades\Route;
+ 
+$route = Route::current(); // Illuminate\Routing\Route
+$name = Route::currentRouteName(); // string
+$action = Route::currentRouteAction(); // string
+```
+
+Refer API documentation for both the underlying class of the Route facade and Route instance to know all possible methods available on the router and route classes.
 
 ### &#10022; CORS:
 
+Laravel automatically respond to CORS OPTIONS HTTP requests. All CORS settings may be found and configured in `config/cors.php` CORS configuration file. This OPTIONS request will handled by `HandleCors` middleware. That middleware included by default in global middleware stack.
+
+Global middleware stack is located in `App\Http\Kernel`.
+
 ### &#10022; Route Caching:
+
+When deploying application to production, Take advantage of Laravel route cache. This route cache will decrease the amount of time to register all of the routes. It is possible to generate a route cache by using `Artisan` command.
+
+```bash
+php artisan route:cache
+```
+
+After route cached that will be utilized on every request. 
+
+**Note:**
+
+- If any of the new routes added in the routes, then it is important to generate a fresh route cache. 
+
+**Clear Route Cache:**
+
+```bash
+php artisan route:clear
+```
 
 ---
 [&#8682; To Top](#-routing)
