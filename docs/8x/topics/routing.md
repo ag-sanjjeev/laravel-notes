@@ -2,6 +2,10 @@
 
 In Laravel, routing is important to defines the mapping between URLs (Uniform Resource Locators) and the code that should be executed when those URLs are accessed. Where the code means controller method or closure should handle a specific request.
 
+Laravel Routing will simplify the application logic almost within routes. It is possible by route parameters, regex constraints, route groups and model binding. 
+
+By these features, it will eliminate usage of controller for retrieve data by the model.
+
 ### &#9780; Overview:
 1. [Route Definition](#-route-definition),
 2. [Dependency Injection](#-dependency-injection)
@@ -25,11 +29,12 @@ In Laravel, routing is important to defines the mapping between URLs (Uniform Re
 	- [Subdomain Routing](#-subdomain-routing)
 16. [Model Binding](#-model-binding)
 17. [Implicit Model Binding](#-implicit-model-binding)
-    - [Soft Deleted Models](#-soft-deleted-models)
+    - [Models Binding For Soft Deleted Record](#-model-binding-for-soft-deleted-records)
     - [Custom Column Key](#-custom-column-key)
     - [Key Scoping](#-key-scoping)
     - [Missing Model Behavior](#-missing-model-behavior)    
 18. [Explicit Model Binding](#-explicit-model-binding)
+19. [Custom Model Binding](#-custom-model-binding)
 . [Fallback Routes](#-)
 . [Request Rate Limiting](#-)
 . [Form Method Spoofing](#-)
@@ -39,14 +44,14 @@ In Laravel, routing is important to defines the mapping between URLs (Uniform Re
 
 ### &#10022; Route Definition:
 
-Routes are located at routes directory. Where it has web.php, api.php and so on. That defines routes for different interfaces such as web and api correspondingly. 
+Routes are located at routes directory. Where it has `web.php`, `api.php` and so on. That defines routes for different interfaces such as web and api correspondingly. 
 
-- routes/web.php file defines routes for web interface. These routes are assigned with web middleware group, which provides features like session state management and CSRF protection. 
-- routes/api.php file defines routes for api interface. These routes are stateless and assigned the api middleware group.
+- `routes/web.php` file defines routes for web interface. These routes are assigned with web middleware group, which provides features like session state management and CSRF protection. 
+- `routes/api.php` file defines routes for api interface. These routes are stateless and assigned the api middleware group.
 
 These route files automatically loaded by App\Providers\RouteServiceProvider.
 
-Laravel namespace standard for web.php Route file:
+Laravel namespace standard for `web.php` Route file:
 
 ```php
 use Illuminate\Support\Facades\Route;
@@ -74,7 +79,7 @@ Route::any($uri, $callback); // accepts any request methods
 
 **Note:**
 
-- When defining routes for same URI with different HTTP method, then first definition will be taken with corresponding HTTP method. Avoid defining any, match and redirect methods before to it.
+- When defining routes for same URI with different HTTP method, then first definition will be taken with corresponding HTTP method. Avoid defining any, match and redirect methods before any specific route method.
 
 ### &#10022; Dependency Injection:
 
@@ -479,9 +484,19 @@ public function show(Post $post)
 }
 ```
 
-### &#10022; Soft Deleted Models:
+### &#10022; Models Binding For Soft Deleted Record:
 
-**not clearly under stand**
+When a model contains a soft deleted record, then Laravel treats as deleted by checking a column `deleted_at` is not null. 
+
+When route parameter contains id for the model binding and their corresponding record was soft deleted, then it would through fallback 404 page not found error. To avoid 404, and consider those record as well to match when a model binding using method `withTrashed`. 
+
+```php
+use App\Models\User;
+ 
+Route::get('/users/{user}', function (User $user) {
+    // it will match and get soft deleted record as well
+})->withTrashed();
+```
 
 ### &#10022; Custom Column Key:
 
@@ -538,7 +553,32 @@ Route::get('/users/{user}/posts/{post:post_id}', function (User $user, Post $pos
 
 ### &#10022; Key Scoping:
 
-**not clearly under stand**
+If the route definitions has multiple route parameters, that has corresponding model binding. By default, Laravel try to resolve by utilizing model relationship. If it is not then it can be enforced to treat as `parent` and `child` relationship between those models with method `scopeBinding`.
+
+It adds extra layer of security that when a model is related with another. For example, `Author` model is parent of `Post` model. It is not possible to access any of the post eventhough the post id is known. But it allow to access post belongs to the author id.
+
+If it is not found then it fallback 404 page not found error.
+
+```php
+use App\Models\Author;
+use App\Models\Post;
+ 
+Route::get('/author/{author}/posts/{post}', function (Author $author, Post $post) {
+    return view('post.article', ['title' => $post->title, 'content' => $post->content]);
+})->scopeBindings();
+```
+
+**Scope Binding as Route Group:**
+
+To instruct and define the entire routes has to bind with scope binding.
+
+```php
+Route::scopeBindings()->group(function () {
+    Route::get('/author/{author}/posts/{post}', function (Author $author, Post $post) {
+        return view('post.article', ['title' => $post->title, 'content' => $post->content]);
+    });
+});
+```
 
 ### &#10022; Missing Model Behavior:
 
@@ -557,6 +597,104 @@ Route::get('/post/{post:post_name}', [PostController::class, 'show'])
 ```
 
 ### &#10022; Explicit Model Binding:
+
+Laravel gives possibility to bind models explicitly through `boot` method inside `App\Providers\RouteServiceProvider`. It tells how route parameters correspond to the models.
+
+If the correspond route parameter is not match with model then it would fallback 404 page not found error.
+
+```php
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+ 
+/**
+ * Define your route model bindings, pattern filters, etc.
+ *
+ * @return void
+ */
+public function boot()
+{
+    Route::model('user', User::class);
+    // ...
+}
+```
+
+In `web.php`:
+
+```php
+use App\Models\User;
+ 
+Route::get('/users/{user}', function (User $user) {
+    //
+});
+```
+
+### &#10022; Custom Model Binding:
+
+In order to define custom model binding logic then it can be done by define inside `boot` method of `App\Providers\RouteServiceProvider` by using method `bind`.
+
+```php
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+ 
+/**
+ * Define your route model bindings, pattern filters, etc.
+ *
+ * @return void
+ */
+public function boot()
+{
+    Route::bind('user', function ($value) {
+        return User::where('name', $value)->firstOrFail();
+    });
+}
+```
+
+**Define Inside Model Class:**
+
+```php
+// User.php user model class
+
+/**
+ * Retrieve the model for a bound value.
+ *
+ * @param  mixed  $value
+ * @param  string|null  $field
+ * @return \Illuminate\Database\Eloquent\Model|null
+ */
+public function resolveRouteBinding($value, $field = null)
+{
+    return $this->where('name', $value)->firstOrFail();
+}
+```
+
+In `web.php`:
+
+```php
+use App\Models\User;
+ 
+Route::get('/users/{user}', function (User $user) {
+    // route parameter will match with User model field `name` instead of `primary key`
+});
+```
+
+**For child method scope binding:**
+
+When route definitions has scoped model binding implicitly then it can resolved child model binding behavior of the parent model by override method `resolveChildRouteBinding` inside parent model.
+
+```php
+/**
+ * Retrieve the child model for a bound value.
+ *
+ * @param  string  $childType
+ * @param  mixed  $value
+ * @param  string|null  $field
+ * @return \Illuminate\Database\Eloquent\Model|null
+ */
+public function resolveChildRouteBinding($childType, $value, $field)
+{
+    return parent::resolveChildRouteBinding($childType, $value, $field);
+}
+``` 
 
 ### &#10022; Fallback Routes:
 
