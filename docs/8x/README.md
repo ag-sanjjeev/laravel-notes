@@ -14,7 +14,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Artisan Commands](./topics/artisan-commands.md)
 	- [Routing](./topics/routing.md)
 	- [Middleware](./topics/middleware.md)
-	- Controllers
+	- [Controllers](./topics/controllers.md)
 	- Requests
 	- Responses
 	- Views (Blade Templating)
