@@ -16,13 +16,13 @@ After creating and implementing application logic to the controller, then it nee
     - [Nested Resources](#-nested-resources)
     - [Scope Nested Resources](#-scope-nested-resources)
     - [Shallow Nested Resources](#-shallow-nested-resources)
-    . [Naming Resource Routes](#-)
-    . [Naming Resource Route Parameters](#-)
-    . [Scoping Resource Routes](#-)
-    . [Localizing Resource URIs](#-)
-    . [Supplementing Resource Controllers](#-)
-. [API Resource Controllers](#-api-resource-controllers)
-. [Dependency Injection & Controllers](#-)
+    - [Naming Resource Routes](#-naming-resource-routes)
+    - [Naming Resource Route Parameters](#-naming-resource-route-parameters)
+    - [Scoping Resource Routes](#-scoping-resource-routes)
+    - [Localizing Resource URIs](#-localizing-resource-uris)
+    - [Supplementing Resource Controllers](#-supplementing-resource-controllers)
+5. [Dependency Injection](#-dependency-injection)
+6. [API Resource Controllers](#-api-resource-controllers)
 
 
 ### &#10022; Creating Controllers:
@@ -236,7 +236,7 @@ To generate form request classes for the controller storage and update methods w
 php artisan make:controller PostController --model=Post --resource --requests
 ```
 
-**Missing Model Binding in Resource Routes:**
+### &#10022; Missing Model Binding in Resource Routes:
 
 In `web.php` file:
 
@@ -310,13 +310,13 @@ This above route definition will have the following routes:
 
 | Request Method | URI | Controller Method | Route Name | Remark |
 |---|---|---|---|---|
-|GET | /post/{post}/comments | index | post.comments.index | List Page |
-|GET | /post/{post}/comments/create | create | post.comments.create | Show Create Form |
-|POST | /post/{post}/comments | store | post.comments.store | Store Form Data |
-|GET | /comments/{comment} | show | comments.show | Show Data |
-|GET | /comments/{comment}/edit | edit | comments.edit | Show Edit Form |
-|PUT/PATCH | /comments/{comment} | update | comments.update | Update Form Data |
-|DELETE | /comments/{comment} | destroy | comments.destroy | Delete Data |
+|GET | /post/{post}/comment | index | post.comment.index | List Page |
+|GET | /post/{post}/comment/create | create | post.comment.create | Show Create Form |
+|POST | /post/{post}/comment | store | post.comment.store | Store Form Data |
+|GET | /comment/{comment} | show | comment.show | Show Data |
+|GET | /comment/{comment}/edit | edit | comment.edit | Show Edit Form |
+|PUT/PATCH | /comment/{comment} | update | comment.update | Update Form Data |
+|DELETE | /comment/{comment} | destroy | comment.destroy | Delete Data |
 
 ### &#10022; Naming Resource Routes:
 
@@ -336,11 +336,184 @@ Route::resource('post', PostController::class)->names([
 
 ### &#10022; Naming Resource Route Parameters:
 
+Route::resource will create the route parameters as per the table above mentioned. This route parameters can be override with `parameters` method by mention alternative names for parameters as an array.
+
+In `web.php` file:
+
+Resource routes generate URI for the resource as `/user/{user}` for show route. To override `{user}` with `{admin_user}` then final URI is `/users/{admin_user}` and it is possible with below approach:
+
+```php
+use App\Http\Controllers\AdminUserController;
+ 
+Route::resource('user', AdminUserController::class)->parameters([
+    'user' => 'admin_user'
+]);
+```
+
 ### &#10022; Scoping Resource Routes:
+
+Laravel resolves nested model binding and confirms that child model is belongs to the parent model. It can be scoped by using `scoped` method when define nested resource. It is possible to enable automatic scope as well as required field of the child resource should be retrieved.
+
+In `web.php` file:
+
+By default, URI assigned as `/post/{post}/comment/{comment}` and to register route as URI `/post/{post}/comment/{comment:comment_id}`.
+
+```php
+use App\Http\Controllers\PostCommentController;
+ 
+Route::resource('post.comment', PhotoCommentController::class)->scoped([
+    'comment' => 'comment_id',
+]);
+```
+
+Refer [Custom Column Key in Routing](./routing.md#-custom-column-key) for more.
 
 ### &#10022; Localizing Resource URIs:
 
+Laravel uses English verbs to describe the route action methods. If it need to localize those verbs then it can be modified according to the localization. It is possible with `resourceVerbs` method of `Route` class at the beginning of the `boot` method within `App\Providers\RouteServiceProvider` class.
+
+For an example, To customize those verbs corresponding in Tamil Language. `uruvakku` is same to `create` and `thiruthu` is same to `edit`. Once those verbs defined, then resource route registration need to be done.
+
+In `web.php` file:
+
+```php
+Route::resource('porul', ProductController::class);
+```
+
+The above route definition will produce URI as below:
+
+For create - `/porul/uruvakku`
+For edit - `/porul/{porul}/thiruthu`
+
+In `App\Providers\RouteServiceProvider` class:
+
+```php
+/**
+ * Define your route model bindings, pattern filters, etc.
+ *
+ * @return void
+ */
+public function boot()
+{
+    Route::resourceVerbs([
+        'create' => 'uruvakku', // Tamil language corresponding 
+        'edit' => 'thiruthu' // Tamil language corresponding
+    ]);
+ 
+    // ...
+}
+```
+
 ### &#10022; Supplementing Resource Controllers:
+
+If it requires to handle additional set of routes to the same resource controller other than default set of resource action methods. It is possible to define those supplement routes before any resource route definition. Otherwise, it will proceed with resource route action methods and might through error.
+
+**Note:** 
+
+- If it need to additional methods other than the resource controller action methods, then it is recommend to split the controller. And keep the controller logic focused. 
+
+In `web.php` file:
+
+```php
+use App\Http\Controller\PostController;
+ 
+Route::get('/post/popular', [PostController::class, 'popular']);
+Route::resource('post', PostController::class);
+```
+
+### &#10022; Dependency Injection:
+
+**Constructor Injection:**
+
+Laravel service container will resolve all Laravel controllers dependencies when it is type-hinted. Those declared dependencies will be resolved and injected into the controller instance.
+
+```php
+namespace App\Http\Controllers;
+ 
+use App\Models\Product;
+ 
+class ProductController extends Controller
+{
+    /**
+     * The product model instance.
+     * 
+     * @var Product|null
+     */
+    protected ?Product $product = null;
+ 
+    /**
+     * Create a new controller instance.
+     *
+     * @param  \App\Models\Product $product
+     * @return void
+     */
+    public function __construct(Product $product): void
+    {
+        $this->product = $product;
+    }
+}
+```
+
+**Method Injection:**
+
+Similarly, Dependencies can be resolved and injected to the controller's method arguments. Here, `Request` and `Response` dependencies will be injected into the method when invoked.
+
+```php
+namespace App\Http\Controllers;
+ 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+ 
+class ProductController extends Controller
+{
+    /**
+     * Store a new product.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request): Response
+    {
+        $name = $request->name;
+        // ... 
+    }
+}
+```
+
+**Inject Route Parameter:**
+
+In `web.php` file:
+
+```php
+use App\Http\Controllers\ProductController;
+ 
+Route::get('/product/{id}', [ProductController::class, 'show'])->where('id', '[0-9]+');
+```
+
+It is still possible by type-hint `Illuminate\Http\Request` class instance and access product id parameter.
+
+```php
+namespace App\Http\Controllers;
+ 
+use Illuminate\Http\Request;
+ 
+class ProductController extends Controller
+{
+    /**
+     * Show the given product.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, int $id): Response
+    {
+        $id = $request->id; // can be accessed the route parameter
+        $id = $id; // can be accessed the route parameter
+        // ...
+    }
+}
+```
 
 ### &#10022; API Resource Controllers:
 
@@ -377,9 +550,6 @@ To generate controller for API resource by using `--api` option in Artisan comma
 ```bash
 php artisan make:controller PostController --api
 ```
-
-### &#10022; Dependency Injection & Controllers:
-
 
 ---
 [&#8682; To Top](#-controllers)
