@@ -41,6 +41,7 @@ By these features, it will eliminate usage of controller for retrieve data by th
 23. [Current Route Information](#-current-route-information)
 24. [CORS](#-cors)
 25. [Route Caching](#-route-caching)
+26. [Routes List](#-routes-list)
 
 ### &#10022; Route Definition:
 
@@ -584,6 +585,8 @@ Route::scopeBindings()->group(function () {
 
 If a model is not found when it is defined/bound implicitly, then a 404 HTTP response will be generated. But, it can be customized by using `missing` method when defining routes. The missing method accepts argument as a closure that will be invoked when model is not found which is implicitly bound.
 
+That is when route parameters value does not match model's table then it is considered as missing. So handle this kind of scenario using `missing` method as below:
+
 ```php
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
@@ -903,6 +906,14 @@ After route cached that will be utilized on every request.
 
 ```bash
 php artisan route:clear
+```
+
+### &#10022; Routes List:
+
+To check defined and available routes as list with below Artisan command.
+
+```bash
+php artisan route:list
 ```
 
 ---
