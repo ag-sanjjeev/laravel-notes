@@ -16,7 +16,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Middleware](./topics/middleware.md)
 	- [Controllers](./topics/controllers.md)
 	- [Requests](./topics/requests.md)
-	- Responses
+	- [Responses](./topics/responses.md)
 	- Views (Blade Templating)
 	- [CSRF Protection](./topics/csrf-protection.md)
 	- URL Generation
