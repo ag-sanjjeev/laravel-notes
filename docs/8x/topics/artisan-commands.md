@@ -3,7 +3,8 @@
 ### &#9780; Overview:
 1. [What is Artisan](#-what-is-artisan)
 2. [Basic Usage](#-basic-usage)
-3. [Common Artisan Commands](#-common-artisan-commands)
+3. [Stubs](#-stubs)
+4. [Common Artisan Commands](#-common-artisan-commands)
 
 ### &#10022; What is Artisan:
 
@@ -28,6 +29,58 @@ php artisan command:name [options] [arguments]
 	- `[options]`: Optional flags that sets the command's behavior.
 	- `[arguments]`: Optional values that the command might requires.
 
+
+### &#10022; Stubs:
+
+In Laravel, stubs are template files, which is used to generate boilerplate code. when using Artisan make commands.
+
+Stubs contains placeholder where the described options will be placed.
+
+**Stub Publishing:**
+
+- By default, Laravel keeps these stubs within its core files.
+- Stub publishing is the process of copying default stubs to the project, so it can be modified as per requirements.
+- When publish the stubs means making a copy of them into the project's `stubs` directory.
+- Once published, it is possible to edit stubs to customize the generated code.
+
+**Artisan Command:**
+
+```bash
+php artisan stub:publish
+```
+
+This stub publish command will create a `stubs` directory if it is not exists in the project's root directory and copy the default stubs into it.
+
+**Customizing Stubs**
+
+- For an example, consider controller stub.
+- After publishing the stubs, controller stubs can be found in the `stubs` directory.
+- the default controller stub is named as `controller.stub`.
+- To modify it by and edit the changes to want reflect in the code generation:
+  - Add or remove methods.
+  - Modify the method signatures.
+  - Add comments.
+  - Include default imports or use statements.
+  - Modify overall structure of the code.
+
+*Example:*
+
+If it is required to `Illuminate\Http\Request` class in every controller class. To include the requirements in the `controller.stub`.
+
+```php
+namespace {{ namespace }};
+
+use Illuminate\Http\Request; // Added request class
+
+use App\Http\Controllers\Controller;
+
+class {{ class }} extends Controller
+{
+    // ...
+}
+```
+
+After this modification, Whenever use `make` command for creating controller then this above `controller.stub` will be used.
 
 ### &#10022; Common Artisan Commands:
 
