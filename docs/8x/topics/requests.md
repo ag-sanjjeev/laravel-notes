@@ -14,11 +14,11 @@
 2. [Retrieve Input](#-retrieve-input)
     - [Retrieve All Input](#-retrieve-all-input)
     - [Retrieve From Query String](#-retrieve-from-query-string)
-    - [Retrieving JSON Input](#-retrieve-json-input)
-    - [Retrieving Boolean Input](#-retrieve-boolean-input)
-    - [Retrieving Date Input](#-retrieve-date-input)
-    - [Retrieving Input Using Dynamic Properties](#-retrieve-input-using-dynamic-properties)
-    - [Retrieving Portion Of Input:](#-retrieve-portion-of-input)
+    - [Retrieve JSON Input](#-retrieve-json-input)
+    - [Retrieve Boolean Input](#-retrieve-boolean-input)
+    - [Retrieve Date Input](#-retrieve-date-input)
+    - [Retrieve Input Using Dynamic Properties](#-retrieve-input-using-dynamic-properties)
+    - [Retrieve Portion Of Input:](#-retrieve-portion-of-input)
     - [Check Input Exist](#-check-input-exist)
     - [Invoke Closure When Input Exist](#-invoke-closure-when-input-exist)
     - [Check Input Filled](#-check-input-filled)
@@ -29,13 +29,16 @@
     - [Flashing Input To The Session](#-flashing-input-to-the-session)
     - [Redirect With Flash Input](#-redirect-with-flash-input)
     - [Retrieving Old Input](#-retrieving-old-input)
-    . [Cookies](#-)
-    . [Input Trimming & Normalization](#-)
-. [Files](#-)
-    . [Retrieving Uploaded Files](#-)
-    . [Storing Uploaded Files](#-)
-. [Configuring Trusted Proxies](#-)
-. [Configuring Trusted Hosts](#-)
+    - [Cookies](#-cookies)
+    - [Input Trimming and Normalization](#-input-trimming-and-normalization)
+3. [Retrieve Uploaded Files](#-retrieve-uploaded-files)
+    - [Check File Is Uploaded](#-check-file-is-uploaded)
+    - [Validate Uploaded Files](#-validate-uploaded-files)
+    - [Uploaded Files Path and Extension](#-uploaded-files-path-and-extension)
+    - [Store Uploaded Files](#-store-uploaded-files)
+    - [Other Files Methods](#-other-files-methods)
+4. [Configure Trusted Proxies](#-configure-trusted-proxies)
+5. [Configure Trusted Hosts](#-configure-trusted-hosts)
 
 ### &#10022; Access Request:
 
@@ -213,7 +216,7 @@ Route::get('/', function (ServerRequestInterface $request) {
 
 If the response from a route or controller is PSR-7 response instance, then it will be converted back into Laravel response instance and be displayed to the user.
 
-### &#10022; Retrieving Input:
+### &#10022; Retrieve Input:
 
 To access all input request data from user request with `Illuminate\Http\Request` class instance independent of HTTP request method. 
 
@@ -295,7 +298,7 @@ $name = $request->query('name', 'Velan');
 $query = $request->query();
 ```
 
-### &#10022; Retrieving JSON Input:
+### &#10022; Retrieve JSON Input:
 
 JSON data can be accessed when incoming request sends JSON data, By `input` method when the Content-Type header of the request is set to `application/json`. To access JSON input value by using `.` dot symbol with nested level within JSON arrays.
 
@@ -303,7 +306,7 @@ JSON data can be accessed when incoming request sends JSON data, By `input` meth
 $name = $request->input('user.name');
 ```
 
-### &#10022; Retrieving Boolean Input:
+### &#10022; Retrieve Boolean Input:
 
 When HTML form elements like checkboxes and radios submitted with type of `Boolean`, then it can be retrieved such a inputs with `boolean` method specified with key name.
 
@@ -313,7 +316,7 @@ The values such as 1, true, "true", "on", "yes" are treated and as boolean `true
 $acceptTerms = $request->boolean('terms');
 ```
 
-### &#10022; Retrieving Date Input:
+### &#10022; Retrieve Date Input:
 
 If the form submitted input values with dates and times, then it can be retrieved as Carbon instances using the `date` method of `Request` class. If the date input is not presents then it will return `null`.
 
@@ -333,7 +336,7 @@ $publishDate = $request->date('publishDate', '!H:i', 'Asia/Kolkata');
 
 If the input value is present and an invalid format, then an `InvalidArgumentException` will be thrown. So, it is important to validate before using the date method.
 
-### &#10022; Retrieving Input Using Dynamic Properties:
+### &#10022; Retrieve Input Using Dynamic Properties:
 
 To access user input via dynamic properties from the `Illuminate\Http\Request` class instance. 
 
@@ -345,7 +348,7 @@ $name = $request->name;
 
 When using dynamic properties, Laravel will search in parameters value from the request and then matched route parameters.
 
-### &#10022; Retrieving Portion Of Input:
+### &#10022; Retrieve Portion Of Input:
 
 To access or retrieve specified portion of input from incoming request, then it can be done with the `only` and `except` methods. Both methods accept a single array or a dynamic list of arguments.
 
@@ -519,23 +522,247 @@ To repopulate form fields with old data using Laravel `old` helper function.
 
 ### &#10022; Cookies:
 
-### &#10022; Input Trimming & Normalization:
+- Laravel cookies are encrypted and signed, preventing client-side alteration.
+- Altered cookies are deemed invalid.
+- To get a cookie's value, use the `cookie` method on `Illuminate\Http\Request`.
+- These cookies are retrieved from HTTP requests.
 
-### &#10022; Files:
+```php
+$value = $request->cookie('name');
+```
 
-### &#10022; Retrieving Uploaded Files:
+### &#10022; Input Trimming and Normalization:
 
-### &#10022; Storing Uploaded Files:
+- Laravel global middleware stack has `TrimStrings` and `ConvertEmptyStringsToNull`.
+- These middleware, in `App\Http\Kernel`, automatically trim request strings and convert empty strings to null.
+- This simplifies route and controller normalization.
+- To disable, remove these two middleware from `$middleware` in `App\Http\Kernel`.
+- This process involves input trimming and normalization of data.
 
-### &#10022; Configuring Trusted Proxies:
+### &#10022; Retrieve Uploaded Files:
 
-### &#10022; Configuring Trusted Hosts:
+- Uploaded files are retrieved via `file` method or dynamic properties from `Illuminate\Http\Request` class.
+- `file` method returns `Illuminate\Http\UploadedFile` class, which is extending PHP `SplFileInfo`.
+- Laravel `UploadedFile` class offers methods for file interaction.
+
+*Example: Accessing photo upload*
+
+```php
+$file = $request->file('photo');
+```
+
+```php
+$file = $request->photo;
+```
 
 
+### &#10022; Check File Is Uploaded:
+
+- `hasFile` method checks if a file exists in the request. It's used to determine file presence.
+- This method verifies file uploads.
+- It helps in conditional file processing.
+
+*Example:* 
+
+```php
+if ($request->hasFile('photo')) { 
+    // 
+}
+```
+
+### &#10022; Validate Uploaded Files:
+
+- `isValid` method checks for file upload errors.
+- It verifies successful file uploads.
+- This method ensures file integrity.
+- It helps in robust file handling.
+
+*Example:* 
+
+```php
+if ($request->file('photo')->isValid()) { 
+// 
+}
+```
+
+### &#10022; Uploaded Files Path and Extension:
+
+- `UploadedFile` class provides methods for uploaded file path and extension access.
+- `path()` gets the uploaded file's full path.
+- `extension()` guesses the extension based on file content.
+- The guessed extension may differ from the client's supplied one.
+
+*Example:* 
+
+```php
+$path = $request->photo->path();
+```
+
+```php
+$extension = $request->photo->extension();
+```
+
+### &#10022; Store Uploaded Files:
+
+- Uploaded files are stored using configured filesystems.
+- `store` method from `UploadedFile` class, which moves uploaded files to a disk like local or cloud storage.
+- `store` method takes a path relative to the disk's root, excluding a filename.
+- A unique ID is generated as the filename.
+- `store` method can accepts an optional disk name.
+- `store` returns the file's path relative to the disk's root after successful store.
+
+*Example:* 
+
+Uploaded file `photo` will be stored inside `images/` directory of configured storage directory.
+
+```php
+$path = $request->photo->store('images');
+```
+
+Similarly, which stores uploaded photo file under `images/` directory under `s3` disk.
+
+```php
+$path = $request->photo->store('images', 's3');
+```
+
+**storeAs Method:**
+
+- `storeAs` method allows specifying the filename.
+- It accepts path, filename, and optional disk name.
+- This avoids automatic unique filename generation.
+- Refer to file storage documentation for details.
+
+*Example:* 
+
+```php
+$path = $request->photo->storeAs('images', 'filename.jpg');
+```
+
+```php
+$path = $request->photo->storeAs('images', 'filename.jpg', 's3');
+```
+
+### &#10022; Other Files Methods:
+
+- `UploadedFile` has various other methods.
+- API documentation provides details.
+- These methods offer further file handling capabilities.
+
+### &#10022; Configure Trusted Proxies:
+
+- Applications behind TLS/SSL terminating load balancers may not generate HTTPS links.
+- This occurs when traffic is forwarded on port 80.
+- The application doesn't recognize the need for secure links.
+- This issue arises with the `url` helper.
+- Configuring trusted proxies addresses this problem.
+- `TrustProxies` middleware solves HTTPS link issues behind load balancers.
+- Trusted proxies are listed in the `$proxies` array.
+- `$headers` configures trusted proxy headers.
+
+*Example:*
+
+This middleware customizes trusted load balancers or proxies.
+
+```php
+namespace App\Http\Middleware;
+ 
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
+use Illuminate\Http\Request;
+ 
+class TrustProxies extends Middleware
+{
+    /**
+     * The trusted proxies for this application.
+     *
+     * @var string|array
+     */
+    protected $proxies = [
+        '192.168.0.21',
+        '192.168.0.22',
+    ];
+ 
+    /**
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
+     */
+    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO;
+}
+```
+
+**AWS Elastic Load Balancing:**
+
+- `$headers` should be `Request::HEADER_X_FORWARDED_AWS_ELB`.
+- Check Symfony's proxy documentation details `$headers` constants.
+- This is for specific cloud load balancer setup.
+- It ensures correct header handling.
+- This configuration is required for cloud environment.
+
+**Trusting All Proxies:**
+
+- Use `*` in proxies property to trusts all proxies.
+- This is for cloud load balancer providers.
+- It's used when balancer IPs are unknown.
+- This simplifies configuration in cloud environments.
+
+*Example:*
+
+```php
+/**
+ * The trusted proxies for this application.
+ *
+ * @var string|array
+ */
+protected $proxies = '*';
+```
+
+### &#10022; Configure Trusted Hosts:
+
+- Laravel handles all requests by default.
+- It disregards the HTTP request's Host header.
+- The Host header value is used for absolute URL generation.
+- This applies during web requests.
+- This is the default behaviour.
+
+- Web servers should typically filter requests based on host names.
+- If web server customization is limited, `App\Http\Middleware\TrustHosts` middleware can be used.
+- `TrustHosts` restricts Laravel's responses to specific host names.
+- This is a workaround for server configuration limitations.
+- It ensures Laravel only responds to desired hosts.
+
+- `TrustHosts` middleware is in the `$middleware` stack.
+- It needs to be uncommented to activate.
+- The `hosts` method specifies allowed host names.
+- Requests with other Host headers are rejected.
+- This ensures only specified hosts can access the application.
+
+- `allSubdomainsOfApplicationUrl` method will returns a regex for all subdomains.
+- It matches subdomains of `app.url` configuration.
+- This helper simplifies utilization for wildcard subdomain.
+- It allows all application subdomains.
+
+*Example:*
+
+In `App\Http\Middleware\TrustHosts` middleware class:
+
+```php
+/**
+ * Get the host patterns that should be trusted.
+ *
+ * @return array
+ */
+public function hosts()
+{
+    return [
+        'laravel.test',
+        $this->allSubdomainsOfApplicationUrl(),
+    ];
+}
+```
 
 ---
 [&#8682; To Top](#-requests)
 
-[&#10094; Previous Topic](./controllers.md) &emsp; [Next Topic &#10095;](./requests.md)
+[&#10094; Previous Topic](./controllers.md) &emsp; [Next Topic &#10095;](./responses.md)
 
 [&#8962; Goto Home Page](../README.md)
