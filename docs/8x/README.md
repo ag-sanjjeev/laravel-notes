@@ -18,6 +18,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Requests](./topics/requests.md)
 	- [Responses](./topics/responses.md)
 	- [Views](./topics/views.md)
+	- [Blade Template](./topics/blade-template.md)
 	- [CSRF Protection](./topics/csrf-protection.md)
 	- URL Generation
 	- Sessions
