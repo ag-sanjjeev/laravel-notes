@@ -98,6 +98,6 @@ Encrypted XSRF-TOKEN cookie has current CSRF token which is stored by Laravel. T
 ---
 [&#8682; To Top](#-csrf-protection)
 
-[&#10094; Previous Topic](./views.md) &emsp; [Next Topic &#10095;](./url-generation.md)
+[&#10094; Previous Topic](./blade-template.md) &emsp; [Next Topic &#10095;](./url-generation.md)
 
 [&#8962; Goto Home Page](../README.md)
