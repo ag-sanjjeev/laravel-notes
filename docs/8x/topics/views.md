@@ -308,6 +308,6 @@ php artisan view:clear
 ---
 [&#8682; To Top](#-views)
 
-[&#10094; Previous Topic](./responses.md) &emsp; [Next Topic &#10095;](./csrf-protection.md)
+[&#10094; Previous Topic](./responses.md) &emsp; [Next Topic &#10095;](./blade-template.md)
 
 [&#8962; Goto Home Page](../README.md)
