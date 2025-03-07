@@ -21,8 +21,8 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Blade Template](./topics/blade-template.md)
 	- [CSRF Protection](./topics/csrf-protection.md)
 	- [URL Generation](./topics/url-generation.md)
-	- Sessions
-	- Validation
+	- [Sessions](./topics/sessions.md)
+	- [Validation](./topics/validation.md)
 	- Error Handling
 	- Logging
 
