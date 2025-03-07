@@ -23,14 +23,16 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [URL Generation](./topics/url-generation.md)
 	- [Sessions](./topics/sessions.md)
 	- [Validation](./topics/validation.md)
-	- Error Handling
+	- [Error Handling](./topics/error-handling.md)
 	- Logging
 
 3. Database & ORM:
+	- Database
 	- Migrations
 	- Seeding
 	- Query Builder
 	- Pagination
+	- Eloquent ORM
 	- Models
 	- Relationships
 	- Mutators/Casts
