@@ -24,7 +24,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Sessions](./topics/sessions.md)
 	- [Validation](./topics/validation.md)
 	- [Error Handling](./topics/error-handling.md)
-	- Logging
+	- [Logging](./topics/logging.md)
 
 3. Database & ORM:
 	- Database
