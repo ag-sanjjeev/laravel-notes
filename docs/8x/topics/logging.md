@@ -444,6 +444,6 @@ class CreateCustomLogger
 ---
 [&#8682; To Top](#-logging)
 
-[&#10094; Previous Topic](./error-handling.md) &emsp; [Next Topic &#10095;](./migrations.md)
+[&#10094; Previous Topic](./error-handling.md) &emsp; [Next Topic &#10095;](./database.md)
 
 [&#8962; Goto Home Page](../README.md)
