@@ -27,7 +27,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- [Logging](./topics/logging.md)
 
 3. Database & ORM:
-	- Database
+	- [Database](./topics/database.md)
 	- Migrations
 	- Seeding
 	- Query Builder
