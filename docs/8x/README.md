@@ -31,7 +31,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 	- Migrations
 	- Seeding
 	- [Query Builder](./topics/query-builder.md)
-	- Pagination
+	- [Pagination](./topics/pagination.md)
 	- Eloquent ORM
 	- Models
 	- Relationships
