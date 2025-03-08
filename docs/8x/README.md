@@ -29,7 +29,7 @@ This repository contains notes for **Laravel version 8x**. That helps to learn a
 3. Database & ORM:
 	- [Database](./topics/database.md)
 	- [Migrations](./topics/migrations.md)
-	- Seeding
+	- [Seeding](./topics/seeding.md)
 	- [Query Builder](./topics/query-builder.md)
 	- [Pagination](./topics/pagination.md)
 	- Eloquent ORM
